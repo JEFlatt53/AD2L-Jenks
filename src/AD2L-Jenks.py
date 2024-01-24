@@ -44,6 +44,11 @@ for team in teams:
     team['AvgMedDevMMR'] = avgMedDevMMR
     team['AdjustedMMR'] = adjMMR
 
+    if clusterMethod == '1':
+        assignmentMetric = adjMMR
+    if clusterMethod == '2':
+        assignmentMetric = totalMMR
+
     for i, upperBound in enumerate(bounds):
         if adjMMR <= upperBound:
             team['Division'] = i
