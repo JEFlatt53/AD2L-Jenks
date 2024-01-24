@@ -64,7 +64,7 @@ def GetTeamMetric(teams, includeHeroic):
     return teamMetrics
 
 def GetMD(data):
-    median = statistics.median(data)
-    deviation = [x - median for x in data]
+    mean = statistics.mean(data)
+    deviation = [x - mean for x in data]
     mean_deviation = statistics.mean(deviation)
     return mean_deviation

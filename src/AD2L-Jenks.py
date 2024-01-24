@@ -9,17 +9,19 @@ from matplotlib import pyplot as plt
 
 #%% Get Inputs
 rostersDir = input("Enter path to roster files: ")
-nDivisions = int(input("Enter desired number of divisions: "))
-while (clusterMethod := input("Cluster by player MMR or teams' MMR sum? (1=Player, 2=Team): ")) not in ['1', '2']: print("Invalid input. Please enter either '1' or '2'. ")
+while (clusterMethod := input("Cluster by player MMR or team MMR? (1=Player, 2=Team): ")) not in ['1', '2']: print("Invalid input. Please enter either '1' or '2'. ")
 includeHeroic = input("Include Heroic players? (y/n): ")
 if includeHeroic.lower() == 'y' or includeHeroic.lower() == 't':
     includeHeroic = True
 else:
     includeHeroic = False
+nDivisions = int(input("Enter desired number of divisions: "))
 
 #%% Get Player/Team Metrics
 combinedRosters = CombineRosters(rostersDir)
 teams = Teams(combinedRosters)
+
+clusterMethods = {'1': 'Player', '2': 'Team'}
 
 if clusterMethod == '1':
     if includeHeroic:
@@ -38,13 +40,13 @@ for team in teams:
         continue
     meanMMR = round(statistics.mean(team['MMR']))
     medianMMR = round(statistics.median(team['MMR']))
-    avgMedDevMMR = round(GetMD(team['MMR']))
+    avgDevMMR = round(GetMD(team['MMR']))
     totalMMR = sum(team['MMR'])
     adjMMR = meanMMR + avgMedDevMMR
     team['MeanMMR'] = meanMMR
     team['MedianMMR'] = medianMMR
     team['TotalMMR'] = totalMMR
-    team['AvgMedDevMMR'] = avgMedDevMMR
+    team['AvgDevMMR'] = avgDevMMR
     team['AdjustedMMR'] = adjMMR
 
     if clusterMethod == '1':
@@ -67,12 +69,14 @@ assignments = roster.drop_duplicates(subset='TeamName')
 assignments.to_csv(rostersDir + '/Teams.tsv', index=False, sep='\t')
 
 #%% Make Plots
-#Plot the numbers of teams in each division
+
+info = 'Number of Divisions = ' + str(nDivisions) + '\n' + \
+       'Includes Heroic? = ' + str(includeHeroic) + '\n' + \
+       'Cluster Method = ' + clusterMethods[clusterMethod]
 plt.figure()
 plt.hist(assignments['Division'], bins=nDivisions)
 plt.title('Division Assignments')
 plt.xlabel('Division')
 plt.ylabel('Number of Teams')
+plt.text(0.01, -0.25, info, transform=plt.gca().transAxes)
 plt.savefig(rostersDir + '/DivisionAssignments.png', dpi=300)
-
-# %%
