@@ -42,17 +42,19 @@ for team in teams:
     medianMMR = round(statistics.median(team['MMR']))
     avgDevMMR = round(GetMD(team['MMR']))
     totalMMR = sum(team['MMR'])
-    adjMMR = meanMMR + avgMedDevMMR
+
+    if clusterMethod == '1':
+        assignmentMetric = meanMMR + avgDevMMR
+    if clusterMethod == '2':
+        assignmentMetric = totalMMR + (5*avgDevMMR)
+
     team['MeanMMR'] = meanMMR
     team['MedianMMR'] = medianMMR
     team['TotalMMR'] = totalMMR
     team['AvgDevMMR'] = avgDevMMR
-    team['AdjustedMMR'] = adjMMR
+    team['AdjustedMMR'] = assignmentMetric
 
-    if clusterMethod == '1':
-        assignmentMetric = adjMMR
-    if clusterMethod == '2':
-        assignmentMetric = totalMMR
+    
 
     for i, upperBound in enumerate(bounds):
         if assignmentMetric <= upperBound:
@@ -80,3 +82,5 @@ plt.xlabel('Division')
 plt.ylabel('Number of Teams')
 plt.text(0.01, -0.25, info, transform=plt.gca().transAxes)
 plt.savefig(rostersDir + '/DivisionAssignments.png', dpi=300)
+
+# %%
