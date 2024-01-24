@@ -81,6 +81,7 @@ plt.title('Division Assignments')
 plt.xlabel('Division')
 plt.ylabel('Number of Teams')
 plt.text(0.01, -0.25, info, transform=plt.gca().transAxes)
+plt.tight_layout()
 plt.savefig(rostersDir + '/DivisionAssignments.png', dpi=300)
 
 # %%
