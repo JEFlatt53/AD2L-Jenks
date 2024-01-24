@@ -17,6 +17,7 @@ def CombineRosters(rostersDir):
             df.columns = ['TeamName', 'PlayerName', 'Rank', 'DotaBuff', 'Stratz', 'TeamWeight']
             df = df.ffill()
             df['MMR'] = df['Rank'].apply(GetMMR)
+            df['OrigDivision'] = GetDiv(filePath)
             dataframes.append(df)
         except:
             print("Skipping file: " + filePath)
@@ -26,5 +27,9 @@ def Teams(df):
     dfs = [data[1] for data in df.groupby('TeamName')]
     return dfs
 
-
+def GetDiv(path):
+    divisions = [('Explorer', 1), ('Voyager', 2), ('Challenger', 3), ('Warrior', 4), ('Conqueror', 5), ('Champion', 6), ('Heroic', 6)]
+    for division in divisions:
+        if division[0] in path:
+            return division[1]
 

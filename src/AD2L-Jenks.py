@@ -54,8 +54,6 @@ for team in teams:
     team['AvgDevMMR'] = avgDevMMR
     team['AdjustedMMR'] = assignmentMetric
 
-    
-
     for i, upperBound in enumerate(bounds):
         if assignmentMetric <= upperBound:
             team['Division'] = i
@@ -71,10 +69,10 @@ assignments = roster.drop_duplicates(subset='TeamName')
 assignments.to_csv(rostersDir + '/Teams.tsv', index=False, sep='\t')
 
 #%% Make Plots
-
 info = 'Number of Divisions = ' + str(nDivisions) + '\n' + \
        'Includes Heroic? = ' + str(includeHeroic) + '\n' + \
        'Cluster Method = ' + clusterMethods[clusterMethod]
+
 plt.figure()
 plt.hist(assignments['Division'], bins=nDivisions)
 plt.title('Division Assignments')
@@ -83,5 +81,37 @@ plt.ylabel('Number of Teams')
 plt.text(0.01, -0.25, info, transform=plt.gca().transAxes)
 plt.tight_layout()
 plt.savefig(rostersDir + '/DivisionAssignments.png', dpi=300)
+
+plt.figure()
+plt.bar(assignments['TeamName'], assignments['OrigDivision'])
+plt.title('Original Division of Each Team')
+plt.xlabel('Team')
+plt.ylabel('Original Division')
+plt.xticks(rotation=90)
+plt.tick_params(axis='x', which='major', labelsize=5)
+plt.tight_layout()
+plt.savefig(rostersDir + '/OldDivisions.png', dpi=300)
+
+plt.figure()
+plt.bar(assignments['TeamName'], assignments['Division'])
+plt.title('New Division of Each Team')
+plt.xlabel('Team')
+plt.ylabel('New Division')
+plt.xticks(rotation=90)
+plt.tick_params(axis='x', which='major', labelsize=5)
+plt.tight_layout()
+plt.savefig(rostersDir + '/NewDivisions.png', dpi=300)
+
+plt.figure()
+plt.bar(assignments['TeamName'], assignments['Division'].sub(assignments['OrigDivision']))
+plt.axhline(y=0, color='black', linestyle='-')
+plt.title('Team Movement')
+plt.xlabel('Team')
+plt.ylabel('Division Change')
+plt.xticks(rotation=90)
+plt.tick_params(axis='x', which='major', labelsize=5)
+plt.tight_layout()
+plt.savefig(rostersDir + '/TeamMovement.png', dpi=300)
+
 
 # %%

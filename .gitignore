@@ -1,1 +1,4 @@
 rosters/
+**/__pycache__/
+*.pyc
+*.pyo
